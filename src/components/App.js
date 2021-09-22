@@ -4,16 +4,15 @@
 // request are being made. When you make use of the Link tag you are not dunmping 
 // components. This is a true SPA(Single PAge Applicaiton)
 
-import React from 'react';
-import { BrowserRouter, Route, Link } from 'react-router-dom'
+import React, { Component } from 'react';
+import { BrowserRouter, Route } from 'react-router-dom';
+import StreamCreate from './streams/StreamCreate';
+import StreamDelete from './streams/StreamDelete';
+import StreamEdit from './streams/StreamEdit';
+import StreamList from './streams/StreamList';
+import StreamShow from './streams/StreamShow';
+import Header from './Header';
 
-const Page1 = () => {
-    return (
-        <div> Page one
-            <Link to="/page2"> Navigate to page two</Link>
-        </div>
-    )
-}
 
 // when the broswers receives that .html file itll take the curent html document
 // and remove is from the screen and sdump all the JS code and data and variables from
@@ -22,17 +21,8 @@ const Page1 = () => {
 // new request to some outside server to an html request
 // we dont want to use a anchor tag in our react dom applications
 
-const Page2 = () => {
-    return (
-        <div> 
-            Page two
-            <button> 
-                Click me 
-            </button>
-            <Link to="/"> Navigate to page one</Link>
-        </div>
-    )
-}
+
+
 
 // this route property is used whterh or not to show the given route ocmponent on the screen
 // the last prop on component given url the user is visitin itll give page 1 or page 2
@@ -50,15 +40,20 @@ const Page2 = () => {
 //the only diff between them is the part ofthe URL they are going to look at
 // when decding wht content toshow on screen
 // deploying with broswerrouter can be challenging but also easy becaue its most common
-// Hash
+
 
 const App = () => {
-    return(
+    return (
         <div> 
+            <h1 className="ui containter"></h1>
             <BrowserRouter>
                 <div>
-                    <Route path="/" exact component={Page1} />
-                    <Route path="/page2" component={Page2} />
+                    <Header />
+                    <Route path="/" exact component= {StreamList} />
+                    <Route path="/streams/new" exact component= {StreamCreate} />
+                    <Route path="/streams/edit" exact component= {StreamEdit} />
+                    <Route path="/streams/delete" exact component= {StreamDelete} />
+                    <Route path="/streams/show" exact component= {StreamShow} />
                 </div>
             </BrowserRouter>
          </div>

@@ -4,14 +4,15 @@
 // request are being made. When you make use of the Link tag you are not dunmping 
 // components. This is a true SPA(Single PAge Applicaiton)
 
-import React, { Component } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import React from 'react';
+import { Router, Route } from 'react-router-dom';
 import StreamCreate from './streams/StreamCreate';
-import StreamDelete from './streams/StreamDelete';
 import StreamEdit from './streams/StreamEdit';
+import StreamDelete from './streams/StreamDelete';
 import StreamList from './streams/StreamList';
 import StreamShow from './streams/StreamShow';
 import Header from './Header';
+import history from '../history';
 
 
 // when the broswers receives that .html file itll take the curent html document
@@ -44,20 +45,20 @@ import Header from './Header';
 
 const App = () => {
     return (
-        <div> 
-            <h1 className="ui containter"></h1>
-            <BrowserRouter>
-                <div>
-                    <Header />
-                    <Route path="/" exact component= {StreamList} />
-                    <Route path="/streams/new" exact component= {StreamCreate} />
-                    <Route path="/streams/edit" exact component= {StreamEdit} />
-                    <Route path="/streams/delete" exact component= {StreamDelete} />
-                    <Route path="/streams/show" exact component= {StreamShow} />
-                </div>
-            </BrowserRouter>
-         </div>
-    )
-}
-
-export default App;
+      <div className="ui container">
+        <Router history={history}>
+          <div>
+            <Header />
+            <Route path="/" exact component={StreamList} />
+            <Route path="/streams/new" exact component={StreamCreate} />
+            <Route path="/streams/edit/:id" exact component={StreamEdit} />
+            <Route path="/streams/delete" exact component={StreamDelete} />
+            <Route path="/streams/show" exact component={StreamShow} />
+          </div>
+        </Router>
+      </div>
+    );
+  };
+  
+  export default App;
+  

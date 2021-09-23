@@ -6,9 +6,9 @@
 
 
 import React from 'react';
-import { connect } from 'react-redux';
-import { createStream } from '../../actions';
-import StreamForm from './StreamForm';
+import { Field, reduxForm } from 'redux-form';
+
+
 
 // below willshow the form and make use of redux form
 // a Field is some type of input text, dropdown etc
@@ -33,19 +33,36 @@ import StreamForm from './StreamForm';
 // and has no diea what to do. So we can add additional props to the firld element
 
 
-class StreamCreate extends React.Component {
-
-    
+class StreamForm extends React.Component {
+    renderError({ error, touched }) {
+      if (touched && error) {
+        return (
+          <div className="ui error message">
+            <div className="header">{error}</div>
+          </div>
+        );
+      }
+    }
   
-   
+    renderInput = ({ input, label, meta }) => {
+      const className = `field ${meta.error && meta.touched ? 'error' : ''}`;
+      return (
+        <div className={className}>
+          <label>{label}</label>
+          <input {...input} autoComplete="off" />
+          {this.renderError(meta)}
+        </div>
+      );
+    };
     // anytimethis is called. its called with an event obj (event)
     // whenever user ubmits form we validate inputs and if calid we call
     // onsbumit and the aciton createro on stream and attemptsto make requests
     // over to api server thats creatrs a stream through restful conventions
+    // we dont want streamForm to handle submission. StreamForm should pass down some props
 
     onSubmit = formValues => {
-        this.props.createStream(formValues);
-    };
+        this.props.onSubmit(formValues);
+      };
 
 // onSubmit is th name of the prop we are passing to the form
 // if we pass a function on the onSubmit prop down into form the func is called
@@ -57,20 +74,42 @@ class StreamCreate extends React.Component {
     
 render() {
     return (
-        <div>
-            <h3>Create a stream</h3>
-            <StreamForm onSubmit={this.onSubmit} />
-      </div>
+      <form
+        onSubmit={this.props.handleSubmit(this.onSubmit)}
+        className="ui form error"
+      >
+        <Field name="title" component={this.renderInput} label="Enter Title" />
+        <Field
+          name="description"
+          component={this.renderInput}
+          label="Enter Description"
+        />
+        <button className="ui button primary">Submit</button>
+      </form>
     );
   }
 }
 
+const validate = (formValues) => {
+    const errors = {};
+  
+    if (!formValues.title) {
+      errors.title = 'You must enter a title';
+    }
+  
+    if (!formValues.description) {
+      errors.description = 'You must enter a description';
+    }
+  
+    return errors;
+  };
+
 
 // below is  way to wrap connect and redux form
+// streamForm does not need to call an action creator. Itll be a parent ocmponent
+// thatll call some action creator
 
-
-  
-  export default connect(
-    null,
-    { createStream }
-  )(StreamCreate)
+export default reduxForm({
+    form: 'streamForm',
+    validate
+  })(StreamForm);

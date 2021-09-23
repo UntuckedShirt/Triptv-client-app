@@ -6,7 +6,10 @@
 
 
 import React from 'react';
-import { Field , reduxForm} from 'redux-form'
+import { Field, reduxForm } from 'redux-form';
+import { connect } from 'react-redux';
+import { createStream } from '../../actions';
+
 
 // below willshow the form and make use of redux form
 // a Field is some type of input text, dropdown etc
@@ -23,27 +26,92 @@ import { Field , reduxForm} from 'redux-form'
 // you would reutnr an input from whatever function we pass to the component
 // prop. Anyime we showan inout ele we always are supposed ot make sure we show 
 // that input ele and assign that value property and callback handler
-
-
+// form props input property itll take all the key value pairs and add them ass 
+// properties to the input elemtnt
+// as a way of shortning syntax further we can destructure the input argument
+// out of the form props obj return <input {...input} /> 
+// anyyimte we add props to our field compoent redux-form sees that a prop was passed in
+// and has no diea what to do. So we can add additional props to the firld element
 
 
 class StreamCreate extends React.Component {
-    renderInput() {
-        return <input /> 
-
-    }
-    render() {
-        console.log(this.props)
+    renderError({ error, touched }) {
+      if (touched && error) {
         return (
-            <form>
-                <Field name="title" component={this.renderInput } /> 
-                <Field name="description" component={this.renderInput} />
-            </form>
-        )
-        
+          <div className="ui error message">
+            <div className="header">{error}</div>
+          </div>
+        );
+      }
     }
-};
 
-export default reduxForm({
-    form: 'streamCreate'
-})(StreamCreate);
+    renderInput = ({ input, label, meta }) => {
+        const className = `field ${meta.error && meta.touched ? 'error' : ''}`;
+        return (
+          <div className={className}>
+            <label>{label}</label>
+            <input {...input} autoComplete="off" />
+            {this.renderError(meta)}
+          </div>
+        );
+      };
+
+    // anytimethis is called. its called with an event obj (event)
+    // whenever user ubmits form we validate inputs and if calid we call
+    // onsbumit and the aciton createro on stream and attemptsto make requests
+    // over to api server thats creatrs a stream through restful conventions
+
+    onSubmit = (formValues) => {
+        this.props.createStream(formValues);
+      };
+
+// onSubmit is th name of the prop we are passing to the form
+// if we pass a function on the onSubmit prop down into form the func is called
+// anytime form is submitted. this.props.onSubmit isa func proivded by redux form
+// we then use our callback method we put inside of component
+// when we go through processitll change how onsubmit is called
+// interanlly redux form will hanle everything
+
+    
+render() {
+    return (
+      <form
+        onSubmit={this.props.handleSubmit(this.onSubmit)}
+        className="ui form error"
+      >
+        <Field name="title" component={this.renderInput} label="Enter Title" />
+        <Field
+          name="description"
+          component={this.renderInput}
+          label="Enter Description"
+        />
+        <button className="ui button primary">Submit</button>
+      </form>
+    );
+  }
+}
+
+const validate = (formValues) => {
+    const errors = {};
+  
+    if (!formValues.title) {
+      errors.title = 'You must enter a title';
+    }
+  
+    if (!formValues.description) {
+      errors.description = 'You must enter a description';
+    }
+  
+    return errors;
+  };
+
+
+// below is  way to wrap connect and redux form
+
+
+const formWrapped = reduxForm({
+    form: 'streamCreate',
+    validate,
+  })(StreamCreate);
+  
+  export default connect(null, { createStream })(formWrapped);

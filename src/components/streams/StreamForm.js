@@ -90,19 +90,19 @@ render() {
   }
 }
 
-const validate = (formValues) => {
-    const errors = {};
-  
-    if (!formValues.title) {
-      errors.title = 'You must enter a title';
-    }
-  
-    if (!formValues.description) {
-      errors.description = 'You must enter a description';
-    }
-  
-    return errors;
-  };
+const validate = formValues => {
+  const errors = {};
+
+  if (!formValues.title) {
+    errors.title = 'You must enter a title';
+  }
+
+  if (!formValues.description) {
+    errors.description = 'You must enter a description';
+  }
+
+  return errors;
+};
 
 
 // below is  way to wrap connect and redux form
@@ -113,3 +113,4 @@ export default reduxForm({
     form: 'streamForm',
     validate
   })(StreamForm);
+  
